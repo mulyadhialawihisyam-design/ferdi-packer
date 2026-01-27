@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Karyawan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #2563eb;
+            --light: #f8fafc;
+            --soft: #e5e7eb;
+            --text: #0f172a;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+        }
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #e0f2fe, #ffffff);
+            color: var(--text);
+        }
+        .hidden {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+        }
+        /* LOGIN */
+        #login {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            width: 320px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
+        }
+        .login-card h2 {
+            text-align: center;
+            color: var(--blue);
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 10px;
+            border: 1px solid var(--soft);
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: var(--blue);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        /* LOADING */
+        #loading {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e0f2fe, #ffffff);
+            overflow: hidden;
+        }
+        .truck {
+            width: 140px;
+            height: 50px;
+            background: #2563eb;
+            border-radius: 6px;
+            position: relative;
+            animation: move 2s ease-in-out infinite;
+        }
+        .truck:before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 8px;
+            width: 40px;
+            height: 34px;
+            background: #1e40af;
+            border-radius: 4px;
+        }
+        .wheel {
+            width: 18px;
+            height: 18px;
+            background: #111;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -9px;
+            animation: spin .6s linear infinite;
+        }
+        .w1 {
+            left: 18px;
+        }
+        .w2 {
+            right: 22px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes move {
+            0% {
+                transform: translateX(-40px);
+            }
+            50% {
+                transform: translateX(40px);
+            }
+            100% {
+                transform: translateX(-40px);
+            }
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+        /* DASHBOARD */
+        #dashboard {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px;
+        }
+        .cv {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .12);
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            overflow: hidden;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #2563eb, #1e40af);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .sidebar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .sidebar img:hover {
+            transform: scale(1.05);
+        }
+        .sidebar h3 {
+            margin: 10px 0 4px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .main {
+            padding: 30px;
+            display: none; /* Sembunyikan awalnya */
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        /* SECTION */
+        .section {
+            margin-bottom: 32px;
+        }
+        .section h4 {
+            margin-bottom: 16px;
+            color: white;
+            background: var(--blue);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .section h4.kedisiplinan {
+            background: var(--blue);
+        }
+        .section h4.produktivitas {
+            background: var(--green);
+        }
+        .section h4.komplain {
+            background: var(--red);
+        }
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 14px;
+        }
+        .box {
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            text-align: center;
+        }
+        .blue {
+            background: #dbeafe;
+        }
+        .red {
+            background: #fee2e2;
+        }
+        .yellow {
+            background: #fef3c7;
+        }
+        .green {
+            background: #dcfce7;
+        }
+        .orange {
+            background: #ffedd5;
+        }
+        .center {
+            text-align: center;
+            font-size: 20px;
+        }
+        @media (max-width: 768px) {
+            .cv {
+                grid-template-columns: 1fr;
+            }
+            .grid, .grid-2x2 {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                padding: 20px;
+            }
+            .main {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <section id="login">
+        <div class="login-card">
+            <h2>Login Karyawan</h2>
+            <input id="user" placeholder="Username">
+            <input id="pass" type="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+    </section>
+    <!-- LOADING -->
+    <section id="loading" class="hidden">
+        <div class="truck">
+            <div class="wheel w1"></div>
+            <div class="wheel w2"></div>
+        </div>
+        <div class="loading-text">Memuat Dashboard...</div>
+    </section>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="hidden">
+        <div class="cv">
+            <aside class="sidebar">
+                <img id="profileImg" src="https://i.imgur.com/jcvZb5d.jpeg" alt="Foto Profil">
+                <h3 id="namaKaryawan">Muhammad Ferdiyansyah</h3>
+                <span id="lamaKerja">0 Tahun 5 Bulan</span>
+            </aside>
+            <main class="main" id="mainContent">
+                <!-- KEDISIPLINAN -->
+                <div class="section">
+                    <h4 class="kedisiplinan">Kedisiplinan</h4>
+                    <div class="grid">
+                        <div class="box blue">Masuk<br><strong id="masuk">1</strong></div>
+                        <div class="box red">Sakit<br><strong id="sakit">0</strong></div>
+                        <div class="box yellow">Izin<br><strong id="izin">0</strong></div>
+                        <div class="box red">Alpa<br><strong id="alpa">0</strong></div>
+                    </div>
+                </div>
+                <!-- PRODUKTIVITAS -->
+                <div class="section">
+                    <h4 class="produktivitas">Produktivitas</h4>
+                    <div class="grid-2x2">
+                        <div class="box green">ACV M<br><strong id="acvM">3.90%</strong></div>
+                        <div class="box green">ACV D<br><strong id="acvD">88.71%</strong></div>
+                        <div class="box yellow">Rank<br><strong id="rank">76</strong></div>
+                        <div class="box orange">Fee<br><strong id="fee">Rp184.430</strong></div>
+                    </div>
+                </div>
+                <!-- KOMPLAIN -->
+                <div class="section">
+                    <h4 class="komplain">Komplain</h4>
+                    <div class="box red center" id="komplain">2 Kasus</div>
+                </div>
+                <!-- LOGOUT BUTTON -->
+                <button onclick="logout()" style="margin-top:20px;padding:10px 20px;background:var(--blue);color:white;border:none;border-radius:10px;cursor:pointer;">Logout</button>
+            </main>
+        </div>
+    </section>
+    <script>
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbxuDMJ9GzBTQ1pkenCJJxRAs8NOsUymhgd5_jxmzLmvw4Br8LViReqavUiy6mkV_dt4/exec';
+
+        function login() {
+            const u = document.getElementById('user').value.trim().toLowerCase();
+            const p = document.getElementById('pass').value.trim();
+            console.log('Input USER (lowercase):', u);
+            console.log('Input PASS:', p);
+            console.log('Expected USER: m.ferdi');
+            console.log('Expected PASS: MuhFerdi');
+            if (u === 'm.ferdi' && p === 'MuhFerdi') {
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('loading').classList.remove('hidden');
+                // Fetch data from API after login
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const employee = data[0]; // Assuming the first item in the array
+                            // Map data to elements
+                            document.getElementById('namaKaryawan').textContent = employee["Nama Karyawan "] || 'Muhammad Ferdiyansyah';
+                            document.getElementById('lamaKerja').textContent = employee["Lama bekerja "] || '0 Tahun 5 Bulan';
+                            document.getElementById('profileImg').src = employee.Foto || 'https://i.imgur.com/jcvZb5d.jpeg';
+                            document.getElementById('masuk').textContent = employee.Masuk || 0;
+                            document.getElementById('sakit').textContent = employee.Sakit || 0;
+                            document.getElementById('izin').textContent = employee["izin "] || 0; // Note the space in key
+                            document.getElementById('alpa').textContent = employee.Alpa || 0;
+                            document.getElementById('acvM').textContent = (employee.Acv_M * 100).toFixed(2) + '%';
+                            document.getElementById('acvD').textContent = (employee.Acv_D * 100).toFixed(2) + '%';
+                            document.getElementById('rank').textContent = employee.Rank || 76;
+                            document.getElementById('fee').textContent = 'Rp' + (employee["fee "] || 184430).toLocaleString('id-ID');
+                            document.getElementById('komplain').textContent = (employee.kasus || 2) + ' Kasus';
+                        } else {
+                            alert('Data karyawan tidak ditemukan. Menggunakan data default.');
+                        }
+                        // Hide loading and show dashboard
+                        setTimeout(() => {
+                            document.getElementById('loading').classList.add('hidden');
+                            document.getElementById('dashboard').classList.remove('hidden');
+                        }, 2000);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        alert('Gagal mengambil data dari API. Menggunakan data default.');
+                        // Fallback to default data
+                        setTimeout(() => {
+                            document.getElementById('loading').classList.add('hidden');
+                            document.getElementById('dashboard').classList.remove('hidden');
+                        }, 2000);
+                    });
+            } else {
+                alert('Login gagal. Pastikan username: M.Ferdi (case apa saja), password: MuhFerdi (case-sensitive)');
+            }
+        }
+
+        function logout() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login').classList.remove('hidden');
+            document.getElementById('user').value = '';
+            document.getElementById('pass').value = '';
+            document.getElementById('mainContent').style.display = 'none'; // Reset main content hidden
+        }
+
+        // Event listener untuk klik foto
+        document.getElementById('profileImg').addEventListener('click', function() {
+            const main = document.getElementById('mainContent');
+            if (main.style.display === 'none' || main.style.display === '') {
+                main.style.display = 'block';
+            } else {
+                main.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
