@@ -3,384 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Karyawan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Jakarta Notebook - Employee Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --blue: #2563eb;
-            --light: #f8fafc;
-            --soft: #e5e7eb;
-            --text: #0f172a;
-            --green: #10b981;
-            --yellow: #f59e0b;
-            --red: #ef4444;
+            --primary: #0054a6; 
+            --primary-dark: #002d59;
+            --accent-red: #ed1c24;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            --glass: rgba(255, 255, 255, 0.95);
+            --text-main: #102a43;
+            --text-sub: #486581;
+            
+            /* Gradient Per Card */
+            --grad-blue: linear-gradient(145deg, #ffffff, #e0f2fe);
+            --grad-yellow: linear-gradient(145deg, #ffffff, #fef3c7);
+            --grad-red: linear-gradient(145deg, #ffffff, #fee2e2);
+            --grad-green: linear-gradient(145deg, #ffffff, #dcfce7);
         }
+
         * {
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         body {
             margin: 0;
-            background: linear-gradient(135deg, #e0f2fe, #ffffff);
-            color: var(--text);
-        }
-        .hidden {
-            visibility: hidden;
-            opacity: 0;
-            pointer-events: none;
-            position: absolute;
-        }
-        /* LOGIN */
-        #login {
+            background: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow-x: hidden;
         }
-        .login-card {
-            background: white;
-            padding: 40px;
-            width: 320px;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
+
+        .hidden { display: none !important; opacity: 0; }
+
+        /* --- LOGO TEXT STYLE --- */
+        .logo-box {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 25px;
+            display: inline-block;
         }
-        .login-card h2 {
-            text-align: center;
-            color: var(--blue);
-        }
-        .login-card input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 10px;
-            border: 1px solid var(--soft);
-        }
-        .login-card button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: var(--blue);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        /* LOADING */
-        #loading {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #e0f2fe, #ffffff);
-            overflow: hidden;
+        .logo-jakarta { color: white; }
+        .logo-notebook { color: var(--accent-red); }
+
+        /* --- TRUCK ANIMATION --- */
+        .truck-stage {
+            position: relative;
+            width: 150px;
+            height: 80px;
+            margin: 0 auto;
         }
         .truck {
-            width: 140px;
-            height: 50px;
-            background: #2563eb;
-            border-radius: 6px;
             position: relative;
-            animation: move 2s ease-in-out infinite;
+            width: 70px;
+            height: 35px;
+            background: var(--primary);
+            border-radius: 4px;
+            animation: truckMove 1.5s infinite alternate ease-in-out;
+            z-index: 2;
         }
-        .truck:before {
+        .truck::after {
             content: '';
             position: absolute;
-            right: -40px;
-            top: 8px;
-            width: 40px;
-            height: 34px;
-            background: #1e40af;
-            border-radius: 4px;
+            right: -18px;
+            bottom: 0;
+            width: 22px;
+            height: 25px;
+            background: var(--primary-dark);
+            border-radius: 0 8px 2px 2px;
         }
-        .wheel {
-            width: 18px;
-            height: 18px;
-            background: #111;
-            border-radius: 50%;
+        .smoke-container { position: absolute; left: -15px; bottom: 5px; }
+        .smoke {
             position: absolute;
-            bottom: -9px;
-            animation: spin .6s linear infinite;
+            width: 10px;
+            height: 10px;
+            background: #cbd5e0;
+            border-radius: 50%;
+            opacity: 0;
+            animation: smokeRise 1.2s infinite;
         }
-        .w1 {
-            left: 18px;
+        @keyframes truckMove { from { transform: translateX(-15px); } to { transform: translateX(15px); } }
+        @keyframes smokeRise {
+            0% { transform: scale(0.5) translate(0, 0); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: scale(2.5) translate(-40px, -30px); opacity: 0; }
         }
-        .w2 {
-            right: 22px;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        @keyframes move {
-            0% {
-                transform: translateX(-40px);
-            }
-            50% {
-                transform: translateX(40px);
-            }
-            100% {
-                transform: translateX(-40px);
-            }
-        }
-        .loading-text {
-            margin-top: 20px;
-            font-weight: 600;
-            color: var(--blue);
-        }
-        /* DASHBOARD */
-        #dashboard {
-            max-width: 900px;
-            margin: auto;
+
+        /* --- LOGIN CARD --- */
+        .login-card {
+            background: var(--glass);
             padding: 40px;
-        }
-        .cv {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, .12);
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            overflow: hidden;
-        }
-        .sidebar {
-            background: linear-gradient(180deg, #2563eb, #1e40af);
-            color: white;
-            padding: 30px;
+            width: 380px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             text-align: center;
         }
-        .sidebar img {
-            width: 120px;
-            height: 120px;
+        .login-card .logo-jakarta { color: var(--primary); }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            outline: none;
+        }
+
+        /* --- DASHBOARD ID CARD --- */
+        #dashboard {
+            width: 95%;
+            max-width: 420px;
+            border-radius: 35px;
+            background: var(--glass);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            border: 1px solid white;
+        }
+        #dashboard.expanded { max-width: 950px; }
+
+        .db-flex { display: flex; flex-direction: column; }
+        #dashboard.expanded .db-flex { flex-direction: row; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background: linear-gradient(160deg, #0054a6 0%, #002d59 100%);
+            padding: 45px 35px;
+            color: white;
+            text-align: center;
+            min-width: 360px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-img-container {
+            position: relative;
+            width: 155px;
+            height: 155px;
+            margin: 0 auto 20px;
+        }
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            border: 4px solid white;
+            border: 6px solid rgba(255,255,255,0.15);
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
-        .sidebar img:hover {
-            transform: scale(1.05);
+
+        .footer-credit {
+            font-size: 10px;
+            margin-top: 25px;
+            opacity: 0.5;
+            letter-spacing: 1px;
+            font-weight: 300;
         }
-        .sidebar h3 {
-            margin: 10px 0 4px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 8px;
+
+        /* --- MAIN CONTENT & GRADIENT CARDS --- */
+        .main-content {
+            padding: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: white;
         }
-        .main {
-            padding: 30px;
-            display: none; /* Sembunyikan awalnya */
-            animation: fadeIn 0.5s ease forwards;
+        #dashboard.expanded .main-content {
+            padding: 40px;
+            max-height: 2000px;
+            opacity: 1;
+            flex: 1;
         }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        /* SECTION */
-        .section {
-            margin-bottom: 32px;
+
+        .stat-card {
+            padding: 20px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-        .section h4 {
-            margin-bottom: 16px;
+
+        /* Custom Gradients per Tipe */
+        .grad-blue { background: var(--grad-blue); border-bottom: 4px solid #0054a6; }
+        .grad-yellow { background: var(--grad-yellow); border-bottom: 4px solid #f59e0b; }
+        .grad-red { background: var(--grad-red); border-bottom: 4px solid #ef4444; }
+        .grad-green { background: var(--grad-green); border-bottom: 4px solid #10b981; }
+
+        .stat-val { display: block; font-size: 24px; font-weight: 800; color: var(--text-main); }
+        .stat-lab { font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; }
+
+        /* FEE CENTERED */
+        .fee-container {
+            grid-column: span 3;
+            text-align: center;
+            background: var(--grad-blue);
+            padding: 25px;
+            border-radius: 20px;
+            border-bottom: 4px solid var(--primary);
+        }
+        .fee-container .stat-val { font-size: 32px; color: var(--primary); }
+
+        .komplain-box {
+            grid-column: span 3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            background: var(--grad-red);
+            border-radius: 20px;
+            border-bottom: 4px solid #ef4444;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            background: var(--blue);
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
             font-weight: 600;
         }
-        .section h4.kedisiplinan {
-            background: var(--blue);
-        }
-        .section h4.produktivitas {
-            background: var(--green);
-        }
-        .section h4.komplain {
-            background: var(--red);
-        }
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        .grid-2x2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 14px;
-        }
-        .box {
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 600;
-            color: #0f172a;
-            text-align: center;
-        }
-        .blue {
-            background: #dbeafe;
-        }
-        .red {
-            background: #fee2e2;
-        }
-        .yellow {
-            background: #fef3c7;
-        }
-        .green {
-            background: #dcfce7;
-        }
-        .orange {
-            background: #ffedd5;
-        }
-        .center {
-            text-align: center;
-            font-size: 20px;
-        }
+        .logout-btn:hover { background: var(--accent-red); border-color: transparent; }
+
         @media (max-width: 768px) {
-            .cv {
-                grid-template-columns: 1fr;
-            }
-            .grid, .grid-2x2 {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                padding: 20px;
-            }
-            .main {
-                padding: 20px;
-            }
+            #dashboard.expanded .db-flex { flex-direction: column; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .fee-container, .komplain-box { grid-column: span 2; }
+            .sidebar { min-width: unset; }
         }
     </style>
 </head>
 <body>
-    <!-- LOGIN -->
+
     <section id="login">
         <div class="login-card">
-            <h2>Login Karyawan</h2>
-            <input id="user" placeholder="Username">
+            <div class="logo-box">
+                <span class="logo-jakarta">Jakarta</span><span class="logo-notebook">Notebook</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 20px;">Employee Performance Portal</p>
+            <input id="user" type="text" placeholder="Username">
             <input id="pass" type="password" placeholder="Password">
-            <button onclick="login()">Login</button>
+            <button onclick="login()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">SIGN IN</button>
         </div>
     </section>
-    <!-- LOADING -->
+
     <section id="loading" class="hidden">
-        <div class="truck">
-            <div class="wheel w1"></div>
-            <div class="wheel w2"></div>
+        <div class="truck-stage">
+            <div class="smoke-container"><div class="smoke"></div><div class="smoke"></div><div class="smoke"></div></div>
+            <div class="truck">
+                <div style="position:absolute; bottom:-4px; left:8px; width:10px; height:10px; background:#333; border-radius:50%; border:2px solid white;"></div>
+                <div style="position:absolute; bottom:-4px; right:8px; width:10px; height:10px; background:#333; border-radius:50%; border:2px solid white;"></div>
+            </div>
         </div>
-        <div class="loading-text">Memuat Dashboard...</div>
+        <p style="margin-top:20px; font-weight:700; color:var(--primary); letter-spacing:1px;">SYNCHRONIZING DATA...</p>
     </section>
-    <!-- DASHBOARD -->
+
     <section id="dashboard" class="hidden">
-        <div class="cv">
+        <div class="db-flex">
             <aside class="sidebar">
-                <img id="profileImg" src="https://i.imgur.com/jcvZb5d.jpeg" alt="Foto Profil">
-                <h3 id="namaKaryawan">Muhammad Ferdiyansyah</h3>
-                <span id="lamaKerja">0 Tahun 5 Bulan</span>
+                <div class="logo-box">
+                    <span class="logo-jakarta">Jakarta</span><span class="logo-notebook">Notebook</span>
+                </div>
+                
+                <div class="profile-img-container">
+                    <img id="profileImg" src="https://i.imgur.com/jcvZb5d.jpeg" alt="Staff" onclick="toggleDetails()">
+                    <div style="position:absolute; bottom:10px; right:10px; width:20px; height:20px; background:#10b981; border:4px solid #0054a6; border-radius:50%;"></div>
+                </div>
+
+                <h2 id="namaKaryawan" style="margin:0; font-size:22px; font-weight:800;">Muhammad Ferdiyansyah</h2>
+                <p id="lamaKerja" style="opacity:0.7; font-size:14px; margin:5px 0 25px;">0 Tahun 5 Bulan</p>
+                
+                <div id="hintText" style="font-size:10px; background:rgba(255,255,255,0.1); padding:8px; border-radius:8px; letter-spacing:1px;">KLIK FOTO UNTUK DETAIL</div>
+
+                <button class="logout-btn" onclick="logout()">Logout</button>
+                
+                <div class="footer-credit">Created by Mulya.ID</div>
             </aside>
-            <main class="main" id="mainContent">
-                <!-- KEDISIPLINAN -->
-                <div class="section">
-                    <h4 class="kedisiplinan">Kedisiplinan</h4>
-                    <div class="grid">
-                        <div class="box blue">Masuk<br><strong id="masuk">1</strong></div>
-                        <div class="box red">Sakit<br><strong id="sakit">0</strong></div>
-                        <div class="box yellow">Izin<br><strong id="izin">0</strong></div>
-                        <div class="box red">Alpa<br><strong id="alpa">0</strong></div>
+
+            <main class="main-content">
+                <h4 style="margin:0 0 20px; color:var(--primary); font-weight:800; border-bottom:2px solid #f0f4f8; padding-bottom:10px; letter-spacing:1px;">PERFORMANCE SUMMARY</h4>
+                
+                <div class="stats-grid">
+                    <div class="stat-card grad-blue"><span class="stat-val" id="masuk">0</span><span class="stat-lab">Masuk</span></div>
+                    <div class="stat-card grad-yellow"><span class="stat-val" id="sakit">0</span><span class="stat-lab">Sakit/Izin</span></div>
+                    <div class="stat-card grad-red"><span class="stat-val" id="alpa">0</span><span class="stat-lab">Alpa</span></div>
+                    
+                    <div class="stat-card grad-green"><span class="stat-val" id="acvM">0%</span><span class="stat-lab">ACV M</span></div>
+                    <div class="stat-card grad-green"><span class="stat-val" id="acvD">0%</span><span class="stat-lab">ACV D</span></div>
+                    <div class="stat-card grad-blue"><span class="stat-val" id="rank">0</span><span class="stat-lab">Rank</span></div>
+
+                    <div class="fee-container">
+                        <span class="stat-lab">ESTIMASI FEE TERIMA</span>
+                        <span class="stat-val" id="fee">Rp0</span>
+                    </div>
+
+                    <div class="komplain-box">
+                        <span class="stat-lab">Total Komplain</span>
+                        <span class="stat-val" id="komplain" style="color:#ef4444">0 Kasus</span>
                     </div>
                 </div>
-                <!-- PRODUKTIVITAS -->
-                <div class="section">
-                    <h4 class="produktivitas">Produktivitas</h4>
-                    <div class="grid-2x2">
-                        <div class="box green">ACV M<br><strong id="acvM">3.90%</strong></div>
-                        <div class="box green">ACV D<br><strong id="acvD">88.71%</strong></div>
-                        <div class="box yellow">Rank<br><strong id="rank">76</strong></div>
-                        <div class="box orange">Fee<br><strong id="fee">Rp184.430</strong></div>
-                    </div>
-                </div>
-                <!-- KOMPLAIN -->
-                <div class="section">
-                    <h4 class="komplain">Komplain</h4>
-                    <div class="box red center" id="komplain">2 Kasus</div>
-                </div>
-                <!-- LOGOUT BUTTON -->
-                <button onclick="logout()" style="margin-top:20px;padding:10px 20px;background:var(--blue);color:white;border:none;border-radius:10px;cursor:pointer;">Logout</button>
             </main>
         </div>
     </section>
+
     <script>
         const apiUrl = 'https://script.google.com/macros/s/AKfycbxuDMJ9GzBTQ1pkenCJJxRAs8NOsUymhgd5_jxmzLmvw4Br8LViReqavUiy6mkV_dt4/exec';
 
         function login() {
-            const u = document.getElementById('user').value.trim().toLowerCase();
+            const u = document.getElementById('user').value.trim();
             const p = document.getElementById('pass').value.trim();
-            console.log('Input USER (lowercase):', u);
-            console.log('Input PASS:', p);
-            console.log('Expected USER: m.ferdi');
-            console.log('Expected PASS: MuhFerdi');
-            if (u === 'm.ferdi' && p === 'MuhFerdi') {
+
+            if (u.toLowerCase() === 'm.ferdi' && p === 'MuhFerdi') {
                 document.getElementById('login').classList.add('hidden');
                 document.getElementById('loading').classList.remove('hidden');
-                // Fetch data from API after login
+
                 fetch(apiUrl)
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         if (data && data.length > 0) {
-                            const employee = data[0]; // Assuming the first item in the array
-                            // Map data to elements
-                            document.getElementById('namaKaryawan').textContent = employee["Nama Karyawan "] || 'Muhammad Ferdiyansyah';
-                            document.getElementById('lamaKerja').textContent = employee["Lama bekerja "] || '0 Tahun 5 Bulan';
-                            document.getElementById('profileImg').src = employee.Foto || 'https://i.imgur.com/jcvZb5d.jpeg';
-                            document.getElementById('masuk').textContent = employee.Masuk || 0;
-                            document.getElementById('sakit').textContent = employee.Sakit || 0;
-                            document.getElementById('izin').textContent = employee["izin "] || 0; // Note the space in key
-                            document.getElementById('alpa').textContent = employee.Alpa || 0;
-                            document.getElementById('acvM').textContent = (employee.Acv_M * 100).toFixed(2) + '%';
-                            document.getElementById('acvD').textContent = (employee.Acv_D * 100).toFixed(2) + '%';
-                            document.getElementById('rank').textContent = employee.Rank || 76;
-                            document.getElementById('fee').textContent = 'Rp' + (employee["fee "] || 184430).toLocaleString('id-ID');
-                            document.getElementById('komplain').textContent = (employee.kasus || 2) + ' Kasus';
-                        } else {
-                            alert('Data karyawan tidak ditemukan. Menggunakan data default.');
+                            const emp = data[0];
+                            document.getElementById('namaKaryawan').textContent = emp["Nama Karyawan "] || 'User';
+                            document.getElementById('lamaKerja').textContent = emp["Lama bekerja "] || '-';
+                            document.getElementById('profileImg').src = emp.Foto || 'https://i.imgur.com/jcvZb5d.jpeg';
+                            document.getElementById('masuk').textContent = emp.Masuk || 0;
+                            document.getElementById('sakit').textContent = (emp.Sakit || 0) + (emp["izin "] || 0);
+                            document.getElementById('alpa').textContent = emp.Alpa || 0;
+                            document.getElementById('acvM').textContent = (emp.Acv_M * 100).toFixed(2) + '%';
+                            document.getElementById('acvD').textContent = (emp.Acv_D * 100).toFixed(2) + '%';
+                            document.getElementById('rank').textContent = emp.Rank || '-';
+                            document.getElementById('fee').textContent = 'Rp' + (emp["fee "] || 0).toLocaleString('id-ID');
+                            document.getElementById('komplain').textContent = (emp.kasus || 0) + ' Kasus';
                         }
-                        // Hide loading and show dashboard
+                        
                         setTimeout(() => {
                             document.getElementById('loading').classList.add('hidden');
                             document.getElementById('dashboard').classList.remove('hidden');
-                        }, 2000);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                        alert('Gagal mengambil data dari API. Menggunakan data default.');
-                        // Fallback to default data
-                        setTimeout(() => {
-                            document.getElementById('loading').classList.add('hidden');
-                            document.getElementById('dashboard').classList.remove('hidden');
-                        }, 2000);
+                        }, 1800);
                     });
             } else {
-                alert('Login gagal. Pastikan username: M.Ferdi (case apa saja), password: MuhFerdi (case-sensitive)');
+                alert('Login Gagal! Username atau Password salah.');
             }
         }
 
-        function logout() {
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('login').classList.remove('hidden');
-            document.getElementById('user').value = '';
-            document.getElementById('pass').value = '';
-            document.getElementById('mainContent').style.display = 'none'; // Reset main content hidden
+        function toggleDetails() {
+            const db = document.getElementById('dashboard');
+            const hint = document.getElementById('hintText');
+            db.classList.toggle('expanded');
+            hint.textContent = db.classList.contains('expanded') ? "KLIK FOTO UNTUK SEMBUNYIKAN" : "KLIK FOTO UNTUK DETAIL";
         }
 
-        // Event listener untuk klik foto
-        document.getElementById('profileImg').addEventListener('click', function() {
-            const main = document.getElementById('mainContent');
-            if (main.style.display === 'none' || main.style.display === '') {
-                main.style.display = 'block';
-            } else {
-                main.style.display = 'none';
-            }
-        });
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
